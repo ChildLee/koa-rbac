@@ -12,6 +12,10 @@
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
     "koa-views": "^6.1.4",
+    "mysql2": "^1.5.3",
     "sequelize": "^4.38.0"
+  },
+  "devDependencies": {
+    "mocha": "^5.2.0"
   }
 }
