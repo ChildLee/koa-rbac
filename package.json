@@ -8,6 +8,7 @@
   },
   "dependencies": {
     "ejs": "^2.6.1",
+    "ioredis": "^3.2.2",
     "koa": "^2.5.2",
     "koa-router": "^7.4.0",
     "koa-static": "^5.0.0",
@@ -16,6 +17,7 @@
     "sequelize": "^4.38.0"
   },
   "devDependencies": {
+    "@types/ioredis": "^3.2.13",
     "mocha": "^5.2.0"
   }
 }
