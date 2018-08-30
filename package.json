@@ -4,7 +4,7 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "pm2-dev app.js"
+    "start": "node src/app.js"
   },
   "dependencies": {
     "koa": "^2.5.2",
@@ -13,8 +13,6 @@
     "sequelize": "^5.0.0-beta.11"
   },
   "devDependencies": {
-    "@types/koa": "^2.0.46",
-    "@types/koa-router": "^7.0.31",
     "mocha": "^5.2.0"
   }
 }
