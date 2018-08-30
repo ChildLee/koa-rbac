@@ -1,8 +1,15 @@
-const db = require('../app/model/index')
-const {sequelize, User, Role, Permission, UserRole, RolePermission} = db
-const {Op} = sequelize
-it('init', async () => {
-  await sequelize.sync({force: true})
+const db = require('../src/config/db')
+const model = require('../src/model/index')
+
+const {User, Role, Permission, UserRole, RolePermission} = model
+const {Op} = db
+
+it('init db', async () => {
+  await db.sync({force: true})
+})
+
+it('init data', async () => {
+
   //菜单数据初始化
   await Permission.create({name: '权限'})
   //一级菜单

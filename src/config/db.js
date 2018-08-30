@@ -1,4 +1,6 @@
-exports.sequelize = {
+const Sequelize = require('sequelize')
+
+module.exports = new Sequelize({
   dialect: 'mysql',
   host: 'localhost',
   port: 3306,
@@ -14,7 +16,7 @@ exports.sequelize = {
   },
 
   timezone: '+08:00',
-  operatorsAliases: false,
+  // operatorsAliases: false,
   define: {
     // 禁止修改表名
     freezeTableName: true,
@@ -25,4 +27,4 @@ exports.sequelize = {
   logging: (sql) => {
     console.log(sql)
   }
-}
+})
