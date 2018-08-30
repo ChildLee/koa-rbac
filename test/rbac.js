@@ -9,9 +9,8 @@ it('init db', async () => {
 })
 
 it('init data', async () => {
-
   //菜单数据初始化
-  await Permission.create({name: '权限'})
+  await Permission.create({name: '权限', type: -1})
   //一级菜单
   const m1 = await Permission.create({name: '用户管理', pid: 1, type: 0, order: 97})//pid:2
   const m2 = await Permission.create({name: '角色管理', pid: 1, type: 0, order: 98})//pid:3
