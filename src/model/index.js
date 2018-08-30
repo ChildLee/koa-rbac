@@ -1,5 +1,9 @@
 const rbac = require('./rbac')
 
 module.exports = {
-  ...rbac
+  User: rbac.User,
+  Role: rbac.Role,
+  Permission: rbac.Permission,
+  UserRole: rbac.UserRole,
+  RolePermission: rbac.RolePermission
 }
