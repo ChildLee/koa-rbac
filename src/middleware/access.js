@@ -1,7 +1,6 @@
-const Sequelize = require('sequelize')
+const db = require('../config/db')
 const model = require('../model/index')
 
-const {Op} = Sequelize
 const {Permission} = model
 
 /**
@@ -21,7 +20,6 @@ const access = function (access) {
   // 将路由权限添加到数组
   accesses.push(access)
   return async function (ctx, next) {
-    console.log(accesses)
     if (access === 1) {
       await next()
     } else {
@@ -35,6 +33,11 @@ const access = function (access) {
  * 初始化路由权限
  */
 async function accessInit() {
+  const tableName = Permission.tableName
+  // 清空权限表
+  await db.query(`DELETE FROM ${tableName}`)
+  // 初始化自增
+  await db.query(`ALTER TABLE ${tableName} AUTO_INCREMENT = 1`)
   // 新添加的权限
   const repeat = []
   // 检查根权限是否存在,不存在则插入,返回id
@@ -50,19 +53,16 @@ async function accessInit() {
       const pid = Menu[0].id
       // 检查菜单是否存在,不存在则插入,菜单id为父id
       const access = await Permission.findOrCreate({where: {url, pid, type}, defaults: {name}})
-      if (access[1]) {
+      if (!access[1]) {
         repeat.push(accesses[i])
       }
     }
   }
+  console.error(`路由权限总计：${accesses.length}`)
   for (let i = 0; i < repeat.length; i++) {
     const {url, name, menu} = repeat[i]
-    console.error(`新添加的权限：${name},${url},${menu}`)
+    console.error(`重复的权限：${name},${url},${menu}`)
   }
-  const count = await Permission.count({where: {pid: {[Op.not]: rootId}}})
-  console.error(`路由权限总计：${accesses.length}`)
-  console.error(`数据库权限总计(除去根权限和菜单)：${count}`)
-  console.error(`可能有${accesses.length - count}个权限重复`)
 }
 
 module.exports = {

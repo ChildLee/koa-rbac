@@ -66,7 +66,7 @@ it('MenuAll', async () => {
       attributes: ['id', 'name', 'url']
     }]
   })
-  console.log(JSON.parse(JSON.stringify(menu)))
+  console.log(JSON.stringify(menu, null, 2))
 })
 
 //角色拥有的权限菜单
@@ -83,7 +83,7 @@ it('UserMenuAll', async () => {
     attributes: ['id', 'name'],
     where: {pid: 1}
   })
-  console.log(JSON.parse(JSON.stringify(menu)))
+  console.log(JSON.stringify(menu, null, 2))
 })
 
 //用户菜单
@@ -118,7 +118,7 @@ it('Menus', async () => {
       attributes: ['id', 'name', 'url']
     }]
   })
-  console.log(JSON.parse(JSON.stringify(menus)))
+  console.log(JSON.stringify(menus, null, 2))
 })
 
 //url访问权限查询
