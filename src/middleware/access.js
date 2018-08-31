@@ -38,6 +38,9 @@ const access = function (access) {
  * 初始化路由权限
  */
 const accessInit = async function () {
+  console.error('**************************************************')
+  console.error('初始化路由权限')
+  console.error('**************************************************')
   // 判断权限数组是不是空的
   if (!accesses.length) return
   // 查询权限表数据库名称
