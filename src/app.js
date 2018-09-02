@@ -1,15 +1,28 @@
 const Koa = require('koa')
-const koaBody = require('koa-body')
+const cors = require('@koa/cors')
 const router = require('./router')
+const koaBody = require('koa-body')
+const logger = require('koa-logger')
+const model = require('./model/index')
+const joi = require('joi')
+const result = require('./utils/result')
 const {accessInit} = require('./middleware/access')
+
 const app = new Koa()
 
+app.context.joi = joi
+app.context.model = model
+app.context.success = result.success
+app.context.err = result.error
+
+app.use(cors())
+app.use(logger())
 app.use(koaBody())
 
 app.use(router.routes()).use(router.allowedMethods())
 
-app.listen(3000, () => {
+app.listen(3000, async () => {
   // 初始化权限
-  accessInit()
+  await accessInit()
   console.log('http://127.0.0.1:3000')
 })

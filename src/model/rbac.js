@@ -48,7 +48,7 @@ const Role = db.define('role', {
 
 
 //权限表
-const Permission = db.define('permission', {
+const Access = db.define('access', {
   id: {
     type: INTEGER,
     primaryKey: true,
@@ -83,12 +83,12 @@ const Permission = db.define('permission', {
     comment: '排序'
   }
 }, {
-  tableName: 'sys_permission',
+  tableName: 'sys_access',
   comment: '权限表'
 })
 
 //权限表-父菜单与主键关联
-Permission.hasMany(Permission, {foreignKey: 'pid'})
+Access.hasMany(Access, {foreignKey: 'pid'})
 
 //用户-角色表
 const UserRole = db.define('user_role', {}, {
@@ -101,15 +101,15 @@ User.belongsToMany(Role, {through: UserRole})
 Role.belongsToMany(User, {through: UserRole})
 
 //角色-权限表
-const RolePermission = db.define('role_permission', {}, {
-  tableName: 'sys_role_permission',
+const RoleAccess = db.define('role_access', {}, {
+  tableName: 'sys_role_access',
   //不添加时间戳属性
   timestamps: false,
   comment: '角色-权限关联表'
 })
-Role.belongsToMany(Permission, {through: RolePermission})
-Permission.belongsToMany(Role, {through: RolePermission})
+Role.belongsToMany(Access, {through: RoleAccess})
+Access.belongsToMany(Role, {through: RoleAccess})
 
 module.exports = {
-  User, Role, Permission, UserRole, RolePermission
+  User, Role, Access, UserRole, RoleAccess
 }

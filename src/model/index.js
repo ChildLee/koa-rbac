@@ -1,9 +1,11 @@
 const rbac = require('./rbac')
+const db = require('../config/db')
 
 module.exports = {
+  Op: db.Op,
   User: rbac.User,
   Role: rbac.Role,
-  Permission: rbac.Permission,
+  Access: rbac.Access,
   UserRole: rbac.UserRole,
-  RolePermission: rbac.RolePermission
+  RoleAccess: rbac.RoleAccess
 }

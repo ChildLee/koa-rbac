@@ -7,13 +7,17 @@
     "start": "node src/app.js"
   },
   "dependencies": {
+    "@koa/cors": "^2.2.2",
+    "joi": "^13.6.0",
     "koa": "^2.5.2",
     "koa-body": "^4.0.4",
+    "koa-logger": "^3.2.0",
     "koa-router": "^7.4.0",
     "mysql2": "^1.6.1",
     "sequelize": "^5.0.0-beta.11"
   },
   "devDependencies": {
+    "@types/joi": "^13.4.4",
     "@types/koa-router": "^7.0.31",
     "mocha": "^5.2.0"
   }
