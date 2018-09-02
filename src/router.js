@@ -22,6 +22,14 @@ router.post('/admin/addRole', access({
   type: 2
 }), rbac.addRole)
 
+// 删除角色
+router.post('/admin/delRole', access({
+  menu: '角色管理',
+  name: '删除角色',
+  url: 'delRole',
+  type: 2
+}), rbac.delRole)
+
 // 权限列表
 router.post('/admin/getAccess', access({
   menu: '权限管理',

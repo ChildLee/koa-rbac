@@ -25,15 +25,28 @@ class RBAC {
 
   // 添加角色
   static async addRole(ctx) {
-    const params = {
-      role: ctx.joi.string().required()
-    }
-    const {error} = ctx.joi.validate(ctx.request.body, params, {allowUnknown: true})
+    const schema = ctx.joi.object({
+      name: ctx.joi.string().trim().required()
+    })
+    const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001)
-    console.log(ctx.request.body)
-    // const {Role} = ctx.model
+    const {Role} = ctx.model
+    const role = await Role.create(value)
+    console.log(JSON.stringify(role, null, 2))
+    ctx.body = ctx.success(role)
+  }
 
-    // Role.create()
+  // 删除角色
+  static async delRole(ctx) {
+    const schema = ctx.joi.object({
+      id: ctx.joi.number().required()
+    })
+    const {value, error} = schema.validate(ctx.request.body)
+    if (error) return ctx.body = ctx.err(1001)
+    const {Role} = ctx.model
+    const role = await Role.destroy({where: value})
+    console.log(JSON.stringify(role, null, 2))
+    ctx.body = ctx.success(role)
   }
 
   // 查询权限
