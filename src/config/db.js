@@ -1,4 +1,5 @@
 const Sequelize = require('sequelize')
+const {log} = require('./log')
 
 module.exports = new Sequelize({
   dialect: 'mysql',
@@ -16,7 +17,6 @@ module.exports = new Sequelize({
   },
 
   timezone: '+08:00',
-  // operatorsAliases: false,
   define: {
     // 禁止修改表名
     freezeTableName: true,
@@ -24,7 +24,5 @@ module.exports = new Sequelize({
     underscored: true
   },
 
-  logging: (sql) => {
-    console.log(sql)
-  }
+  logging: false
 })

@@ -1,7 +1,5 @@
 const db = require('../config/db')
-const model = require('../model/index')
-
-const {Access} = model
+const {log} = require('../config/log')
 
 /**
  * 权限集合
@@ -19,7 +17,8 @@ const accesses = []
  * @returns {Function}
  */
 const access = function (access) {
-  const {url, name, menu, type} = access
+  const {url, name, menu} = access
+  // 必填
   if (!url || !name || !menu) {
     throw new Error('错误的权限')
   } else {
@@ -32,7 +31,6 @@ const access = function (access) {
     } else {
       ctx.body = {code: 2001, message: '您没有权限'}
     }
-
   }
 }
 
@@ -40,9 +38,10 @@ const access = function (access) {
  * 初始化路由权限
  */
 const accessInit = async function () {
-  console.error('**************************************************')
-  console.error('初始化路由权限')
-  console.error('**************************************************')
+  const Access = db.models['access']
+  log.trace('**************************************************')
+  log.trace('初始化路由权限')
+  log.trace('**************************************************')
   // 同步数据库
   await db.sync()
   // 判断权限数组是不是空的
@@ -56,41 +55,44 @@ const accessInit = async function () {
   // 初始化统计重复的权限数组
   const repeat = []
   // 插入根权限,方便下面权限调用pid
-  const Root = await Access.findOrCreate({where: {name: '权限', type: -1}})
+  const root = await Access.findOrCreate({where: {name: '权限', type: -1}})
   // 根权限主键ID
-  const rootID = Root[0].id
+  const rootID = root[0].id
   // 遍历每个路由的权限添加到数据库
   for (let i = 0; i < accesses.length; i++) {
     if (accesses[i]) {
       // 获取路由填入的数据
       const {url, name, menu, type} = accesses[i]
       let pid = rootID
-
       // 路由填入的菜单名称相同则属于同一菜单,不会生成新的数据,直接返回菜单ID
       // 检查菜单是否存在,不存在则插入,返回菜单id
-      const Menu = await Access.findOrCreate({where: {name: menu}, defaults: {type, pid}})
+      const menus = await Access.findOrCreate({where: {name: menu, url: ''}, defaults: {type, pid}})
+      // 如果存在的菜单type不和填入的不一致,且填入的菜单type为1,则将查出来的菜单type改为1
+      if (menus[0].type !== type && type === 1) {
+        menus[0].type = type
+        menus[0].save()
+      }
       // 菜单ID
-      pid = Menu[0].id
-
+      pid = menus[0].id
       // 路由填入的权限路径相同则属于同一菜单,不会生成新的数据,直接返回权限ID
       // 检查权限是否存在,不存在则插入,菜单id为父id
-      const access = await Access.findOrCreate({where: {url}, defaults: {type, name, pid}})
+      const submenu = await Access.findOrCreate({where: {url}, defaults: {type, name, pid}})
       // 判断权限是否存在
-      if (!access[1]) {
+      if (!submenu[1]) {
         // 将已存在的权限添加到数据
         repeat.push(accesses[i])
       }
     }
   }
-  console.error('**************************************************')
+  log.trace('**************************************************')
   // 权限统计,控制台打印
-  console.error(`路由权限总计：${accesses.length}`)
+  log.trace(`路由权限总计：${accesses.length}`)
   // 循环遍历并打印出重复的权限,方便调试
   for (let i = 0; i < repeat.length; i++) {
     const {url, name, menu} = repeat[i]
-    console.error(`重复的权限-url:'${url}',name:'${name}',menu:'${menu}'`)
+    log.trace(`重复的权限-url:'${url}',name:'${name}',menu:'${menu}'`)
   }
-  console.error('**************************************************')
+  log.trace('**************************************************')
 }
 
 module.exports = {

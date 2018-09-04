@@ -4,15 +4,15 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "node src/app.js"
+    "start": "set NODE_ENV=dev&&node src/app.js"
   },
   "dependencies": {
     "@koa/cors": "^2.2.2",
     "joi": "^13.6.0",
     "koa": "^2.5.2",
     "koa-body": "^4.0.4",
-    "koa-logger": "^3.2.0",
     "koa-router": "^7.4.0",
+    "log4js": "^3.0.5",
     "mysql2": "^1.6.1",
     "sequelize": "^5.0.0-beta.11"
   },

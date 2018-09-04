@@ -109,7 +109,3 @@ const RoleAccess = db.define('role_access', {}, {
 })
 Role.belongsToMany(Access, {through: RoleAccess})
 Access.belongsToMany(Role, {through: RoleAccess})
-
-module.exports = {
-  User, Role, Access, UserRole, RoleAccess
-}
