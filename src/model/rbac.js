@@ -27,7 +27,6 @@ const User = db.define('user', {
   comment: '用户表'
 })
 
-
 //角色表
 const Role = db.define('role', {
   id: {
@@ -45,7 +44,6 @@ const Role = db.define('role', {
   tableName: 'sys_role',
   comment: '角色表'
 })
-
 
 //权限表
 const Access = db.define('access', {
