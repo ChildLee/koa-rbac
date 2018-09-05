@@ -16,11 +16,11 @@ class RBAC {
     ctx.body = ctx.success(menu)
   }
 
-
   // 添加角色
   static async addRole(ctx) {
-    const schema = ctx.joi.object({
-      name: ctx.joi.string().trim().required()
+    const {joi} = ctx
+    const schema = joi.object({
+      name: joi.string().trim().required()
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001)
@@ -31,8 +31,9 @@ class RBAC {
 
   // 删除角色
   static async delRole(ctx) {
-    const schema = ctx.joi.object({
-      id: ctx.joi.number().required()
+    const {joi} = ctx
+    const schema = joi.object({
+      id: joi.number().required()
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001)
@@ -43,23 +44,33 @@ class RBAC {
 
   // 修改角色
   static async updateRole(ctx) {
-    const schema = ctx.joi.object({
-      id: ctx.joi.number().required(),
-      name: ctx.joi.string().trim().required()
+    const {joi} = ctx
+    const schema = joi.object({
+      id: joi.number().required(),
+      name: joi.string().trim().required()
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001)
     const {id, name} = value
     const {role} = ctx.model
-    const result = await role.update(name, {where: {id}})
+    const result = await role.update({name}, {where: {id}})
     ctx.body = ctx.success(result)
   }
 
   // 查询角色
   static async getRole(ctx) {
+    const {joi} = ctx
+    const schema = joi.object({
+      page: joi.number().default(1),
+      limit: joi.number().default(15)
+    })
+    const {value, error} = schema.validate(ctx.request.body)
+    if (error) return ctx.body = ctx.err(1001)
+    const {page, limit} = value
     const {role} = ctx.model
-    const result = await role.findAll()
-    ctx.body = ctx.success(result)
+    const total = await role.count()
+    const list = await role.findAll({offset: (page - 1) * limit, limit})
+    ctx.body = ctx.success({list, page, limit, total})
   }
 
   // 查询权限

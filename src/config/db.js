@@ -25,4 +25,8 @@ module.exports = new Sequelize({
   },
 
   logging: false
+
+  // logging: (sql) => {
+  //   log.trace(sql)
+  // }
 })

@@ -3,8 +3,8 @@ const log4js = require('log4js')
 log4js.configure({
   appenders: {
     stdout: {type: 'stdout'},
-    err: {type: 'file', filename: '../log/err.log', maxLogSize: 10 * 1024 * 1024},
-    log: {type: 'file', filename: '../log/log.log', maxLogSize: 10 * 1024 * 1024}
+    err: {type: 'file', filename: '../log/err.log', maxLogSize: 10 * 1024 * 1024, compress: true, keepFileExt: true},
+    log: {type: 'file', filename: '../log/log.log', maxLogSize: 10 * 1024 * 1024, compress: true, keepFileExt: true}
   },
   categories: {
     default: {appenders: ['stdout'], level: 'trace'},
