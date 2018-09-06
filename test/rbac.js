@@ -1,7 +1,7 @@
 const db = require('../src/config/db')
 const model = require('../src/model/index')
 
-const {user, role, access, user_role} = model
+const {user, role, access, user_role, role_access} = model
 const {Op} = db
 
 it('should models', function () {
@@ -152,4 +152,34 @@ it('Banned Account', async () => {
 it('getRole', async () => {
   const roleList = await role.findAll()
   console.log(JSON.stringify(roleList, null, 2))
+})
+
+it('should fenye', async () => {
+  const list = await role.findAndCount({limit: 10})
+  console.log(JSON.stringify(list, null, 2))
+})
+
+it('should ddd', async () => {
+  const res = await role_access.bulkCreate([
+    {roleId: 1, accessId: 3},
+    {roleId: 1, accessId: 4},
+    {roleId: 1, accessId: 5},
+    {roleId: 1, accessId: 6},
+    {roleId: 1, accessId: 7},
+    {roleId: 1, accessId: 9}], {
+    ignoreDuplicates: true
+  })
+  console.log(JSON.stringify(res, null, 2))
+})
+
+it('should roleAccess', async () => {
+  const accesses = await role_access.findAll({
+    attributes: ['accessId'],
+    where: {role_id: 1}
+  })
+  let list = []
+  for (let i = 0; i < accesses.length; i++) {
+    list.push(accesses[i].accessId)
+  }
+  console.log(JSON.stringify(list, null, 2))
 })

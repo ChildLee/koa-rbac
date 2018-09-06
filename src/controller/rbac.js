@@ -23,7 +23,7 @@ class RBAC {
       name: joi.string().trim().required()
     })
     const {value, error} = schema.validate(ctx.request.body)
-    if (error) return ctx.body = ctx.err(1001)
+    if (error) return ctx.body = ctx.err(1001, error.details[0].message)
     const {role} = ctx.model
     const result = await role.create(value)
     ctx.body = ctx.success(result)
@@ -36,7 +36,7 @@ class RBAC {
       id: joi.number().required()
     })
     const {value, error} = schema.validate(ctx.request.body)
-    if (error) return ctx.body = ctx.err(1001)
+    if (error) return ctx.body = ctx.err(1001, error.details[0].message)
     const {role} = ctx.model
     const result = await role.destroy({where: value})
     ctx.body = ctx.success(result)
@@ -50,7 +50,7 @@ class RBAC {
       name: joi.string().trim().required()
     })
     const {value, error} = schema.validate(ctx.request.body)
-    if (error) return ctx.body = ctx.err(1001)
+    if (error) return ctx.body = ctx.err(1001, error.details[0].message)
     const {id, name} = value
     const {role} = ctx.model
     const result = await role.update({name}, {where: {id}})
@@ -65,16 +65,58 @@ class RBAC {
       limit: joi.number().default(15)
     })
     const {value, error} = schema.validate(ctx.request.body)
-    if (error) return ctx.body = ctx.err(1001)
+    if (error) return ctx.body = ctx.err(1001, error.details[0].message)
     const {page, limit} = value
     const {role} = ctx.model
-    const total = await role.count()
-    const list = await role.findAll({offset: (page - 1) * limit, limit})
-    ctx.body = ctx.success({list, page, limit, total})
+    const result = await role.findAndCount({offset: (page - 1) * limit, limit})
+    ctx.body = ctx.success({list: result.rows, page, limit, total: result.count})
+  }
+
+  // 角色添加权限
+  static async roleAddAccess(ctx) {
+    const {joi} = ctx
+    const schema = joi.object({
+      role_id: joi.number().required(),
+      permission: joi.array().items(joi.number()).required()
+    })
+    const {value, error} = schema.validate(ctx.request.body)
+    if (error) return ctx.body = ctx.err(1001, error.details[0].message)
+    const {role_id, permission} = value
+    let arr = []
+    for (let i = 0; i < permission.length; i++) {
+      arr.push({roleId: role_id, accessId: permission[i]})
+    }
+    const {db, role_access} = ctx.model
+    await db.transaction(async t => {
+      await role_access.destroy({where: {role_id}}, {transaction: t})
+      await role_access.bulkCreate(arr, {ignoreDuplicates: true, transaction: t})
+    })
+    ctx.body = ctx.success()
+  }
+
+  // 查询角色权限
+  static async getRoleAccess(ctx) {
+    const {joi} = ctx
+    const schema = joi.object({
+      role_id: joi.number().required()
+    })
+    const {value, error} = schema.validate(ctx.request.body)
+    if (error) return ctx.body = ctx.err(1001, error.details[0].message)
+    const {role_id} = value
+    const {role_access} = ctx.model
+    const accesses = await role_access.findAll({
+      attributes: ['accessId'],
+      where: {role_id}
+    })
+    let list = []
+    for (let i = 0; i < accesses.length; i++) {
+      list.push(accesses[i].accessId)
+    }
+    ctx.body = ctx.success(list)
   }
 
   // 查询权限
-  static async access(ctx) {
+  static async getAccess(ctx) {
     const {access} = ctx.model
     const result = await access.findAll({
       attributes: ['id', 'name'],
@@ -86,6 +128,11 @@ class RBAC {
       }]
     })
     ctx.body = ctx.success(result)
+  }
+
+  // 查询用户
+  static async getUser(ctx) {
+    console.log(ctx.model)
   }
 
 }

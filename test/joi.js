@@ -16,3 +16,12 @@ it('should 1', function () {
   const res = schema.validate({page: 1})
   console.log(res)
 })
+
+it('should arr', function () {
+  const schema = joi.object({
+    role_id: joi.number().required(),
+    permission: joi.array().items(joi.number()).required()
+  })
+  const {value, error} = schema.validate({role_id: 1, permission: []})
+  if (error) console.log(error.details[0].message)
+})

@@ -47,15 +47,17 @@ const accessInit = async function () {
   // 判断权限数组是不是空的
   if (!accesses.length) return
   // 查询权限表数据库名称
-  const tableName = Access.tableName
+  // const tableName = Access.tableName
   // 清空数据库权限表
-  await db.query(`DELETE FROM ${tableName}`)
+  // await db.query(`DELETE FROM ${tableName}`)
   // 初始化权限表自增ID为1
-  await db.query(`ALTER TABLE ${tableName} AUTO_INCREMENT = 1`)
-  // 初始化统计重复的权限数组
-  const repeat = []
+  // await db.query(`ALTER TABLE ${tableName} AUTO_INCREMENT = 1`)
+  // 初始化新增统计权限数组
+  const newAdd = []
+  // 初始化修改统计权限数组
+  const newUpdate = []
   // 插入根权限,方便下面权限调用pid
-  const root = await Access.findOrCreate({where: {name: '权限', type: -1}})
+  const root = await Access.findCreateFind({where: {name: '权限', type: -1}})
   // 根权限主键ID
   const rootID = root[0].id
   // 遍历每个路由的权限添加到数据库
@@ -66,7 +68,7 @@ const accessInit = async function () {
       let pid = rootID
       // 路由填入的菜单名称相同则属于同一菜单,不会生成新的数据,直接返回菜单ID
       // 检查菜单是否存在,不存在则插入,返回菜单id
-      const menus = await Access.findOrCreate({where: {name: menu, url: ''}, defaults: {type, pid}})
+      const menus = await Access.findCreateFind({where: {name: menu, url: ''}, defaults: {type, pid}})
       // 如果存在的菜单type不和填入的不一致,且填入的菜单type为1,则将查出来的菜单type改为1
       if (menus[0].type !== type && type === 1) {
         menus[0].type = type
@@ -74,23 +76,34 @@ const accessInit = async function () {
       }
       // 菜单ID
       pid = menus[0].id
-      // 路由填入的权限路径相同则属于同一菜单,不会生成新的数据,直接返回权限ID
       // 检查权限是否存在,不存在则插入,菜单id为父id
-      const submenu = await Access.findOrCreate({where: {url}, defaults: {type, name, pid}})
+      const submenu = await Access.findCreateFind({where: {name, pid}, defaults: {url, type}})
+      // 已存在的权限判断url是否一致,不一致则更新
+      if (!submenu[1] && (submenu[0].url !== url || submenu[0].type !== type)) {
+        submenu[0].type = type
+        submenu[0].url = url
+        submenu[0].save()
+        newUpdate.push(accesses[i])
+      }
       // 判断权限是否存在
-      if (!submenu[1]) {
+      if (submenu[1]) {
         // 将已存在的权限添加到数据
-        repeat.push(accesses[i])
+        newAdd.push(accesses[i])
       }
     }
   }
   log.trace('**************************************************')
   // 权限统计,控制台打印
   log.trace(`路由权限总计：${accesses.length}`)
-  // 循环遍历并打印出重复的权限,方便调试
-  for (let i = 0; i < repeat.length; i++) {
-    const {url, name, menu} = repeat[i]
-    log.trace(`重复的权限-url:'${url}',name:'${name}',menu:'${menu}'`)
+  // 循环遍历并打印出新增的权限,方便调试
+  for (let i = 0; i < newAdd.length; i++) {
+    const {url, name, menu, type} = newAdd[i]
+    log.trace(`新增的权限-url:'${url}',name:'${name}',menu:'${menu}',type:${type}`)
+  }
+  // 循环遍历并打印出修改的权限,方便调试
+  for (let i = 0; i < newUpdate.length; i++) {
+    const {url, name, menu, type} = newUpdate[i]
+    log.trace(`修改的权限-url:'${url}',name:'${name}',menu:'${menu}',type:${type}`)
   }
   log.trace('**************************************************')
 }
