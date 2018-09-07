@@ -183,3 +183,15 @@ it('should roleAccess', async () => {
   }
   console.log(JSON.stringify(list, null, 2))
 })
+
+it('should replace', async () => {
+  await access.bulkCreate([
+    {id: 1, order: 1},
+    {id: 2, order: 4},
+    {id: 3, order: 5},
+    {id: 4, order: 6},
+    {id: 5, order: 7},
+    {id: 6, order: 9}], {
+    updateOnDuplicate: ['id', 'order']
+  })
+})

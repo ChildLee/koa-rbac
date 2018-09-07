@@ -16,6 +16,22 @@ class RBAC {
     ctx.body = ctx.success(menu)
   }
 
+  // 菜单排序
+  static async menuSort(ctx) {
+    const {joi} = ctx
+    const schema = joi.object({
+      sort: joi.array().items(joi.object()).required()
+    })
+    const {value, error} = schema.validate(ctx.request.body)
+    if (error) return ctx.body = ctx.err(1001, error.details[0].message)
+    const {sort} = value
+    const {access} = ctx.model
+    await access.bulkCreate(sort, {
+      updateOnDuplicate: ['id', 'order']
+    })
+    ctx.body = ctx.success()
+  }
+
   // 添加角色
   static async addRole(ctx) {
     const {joi} = ctx

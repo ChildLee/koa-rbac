@@ -7,6 +7,11 @@ const router = new Router()
 // 菜单列表
 router.post('/admin/getMenu', rbac.menu)
 
+// 菜单排序
+router.post('/admin/menuSort', access({
+  menu: '权限管理', name: '菜单排序', url: '/menuSort', type: 2
+}), rbac.menuSort)
+
 // 添加角色
 router.post('/admin/addRole', access({
   menu: '角色管理', name: '添加角色', url: '/addRole', type: 2
