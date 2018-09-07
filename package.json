@@ -4,17 +4,21 @@
   "main": "index.js",
   "license": "MIT",
   "scripts": {
-    "start": "set NODE_ENV=dev&&node src/app.js"
+    "start": "set NODE_ENV=development&&node src/app.js"
   },
   "dependencies": {
     "@koa/cors": "^2.2.2",
+    "axios": "^0.18.0",
     "joi": "^13.6.0",
     "koa": "^2.5.2",
     "koa-body": "^4.0.4",
     "koa-router": "^7.4.0",
     "log4js": "^3.0.5",
     "mysql2": "^1.6.1",
-    "sequelize": "^5.0.0-beta.11"
+    "qs": "^6.5.2",
+    "sequelize": "^5.0.0-beta.12",
+    "time-stamp": "^2.1.0",
+    "xml2js": "^0.4.19"
   },
   "devDependencies": {
     "@types/joi": "^13.4.4",

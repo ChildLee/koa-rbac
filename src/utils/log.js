@@ -21,7 +21,7 @@ log4js.configure({
 // logger.error('Cheese is too ripe!')
 // logger.fatal('Cheese was breeding ground for listeria.')
 
-let log = process.env.NODE_ENV === 'dev' ? '' : 'log'
+let log = process.env.NODE_ENV === 'development' ? '' : 'log'
 
 exports.err = log4js.getLogger('err')
 exports.log = log4js.getLogger(log)

@@ -4,8 +4,8 @@ class RBAC {
   static async menu(ctx) {
     const {access, Op} = ctx.model
     const menu = await access.findAll({
-      attributes: ['id', 'name', 'type'],
-      where: {pid: 1, type: {[Op.or]: [0, 1]}},
+      attributes: ['id', 'name', 'type', 'icon'],
+      where: {pid: 1, type: 1},
       order: ['order'],
       include: [{
         model: access,
@@ -20,14 +20,18 @@ class RBAC {
   static async menuSort(ctx) {
     const {joi} = ctx
     const schema = joi.object({
-      sort: joi.array().items(joi.object()).required()
+      sort: joi.array().items(joi.object({
+        id: joi.number().integer().min(1).required(),
+        order: joi.number().integer().required(),
+        icon: joi.string().trim().allow('')
+      })).required()
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
     const {sort} = value
     const {access} = ctx.model
     await access.bulkCreate(sort, {
-      updateOnDuplicate: ['id', 'order']
+      updateOnDuplicate: ['id', 'order', 'icon']
     })
     ctx.body = ctx.success()
   }
@@ -135,7 +139,7 @@ class RBAC {
   static async getAccess(ctx) {
     const {access} = ctx.model
     const result = await access.findAll({
-      attributes: ['id', 'name'],
+      attributes: ['id', 'name', 'icon'],
       where: {pid: 1},
       order: ['order'],
       include: [{
@@ -148,7 +152,9 @@ class RBAC {
 
   // 查询用户
   static async getUser(ctx) {
-    console.log(ctx.model)
+    const {user} = ctx.model
+    const list = await user.findAll()
+    ctx.body = ctx.success(list)
   }
 
 }

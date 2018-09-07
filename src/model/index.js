@@ -1,4 +1,4 @@
-const db = require('../config/db')
+const db = require('../utils/db')
 require('./rbac')
 
 module.exports = {

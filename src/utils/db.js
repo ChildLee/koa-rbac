@@ -1,5 +1,4 @@
 const Sequelize = require('sequelize')
-const {log} = require('./log')
 
 module.exports = new Sequelize({
   dialect: 'mysql',

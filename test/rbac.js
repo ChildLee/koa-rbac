@@ -1,4 +1,4 @@
-const db = require('../src/config/db')
+const db = require('../src/utils/db')
 const model = require('../src/model/index')
 
 const {user, role, access, user_role, role_access} = model

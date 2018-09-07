@@ -1,5 +1,5 @@
-const db = require('../config/db')
-const {log} = require('../config/log')
+const db = require('../utils/db')
+const {log} = require('../utils/log')
 
 /**
  * 权限集合

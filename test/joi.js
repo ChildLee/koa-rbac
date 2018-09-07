@@ -1,4 +1,5 @@
 const joi = require('joi')
+const timestamp = require('time-stamp')
 
 it('should joi', function () {
   const schema = joi.object({
@@ -24,4 +25,19 @@ it('should arr', function () {
   })
   const {value, error} = schema.validate({role_id: 1, permission: []})
   if (error) console.log(error.details[0].message)
+})
+
+//生成随机数字
+function randomNumber(len = 18) {
+  const data = '0123456789'
+  const strLength = data.length
+  let str = ''
+  for (let i = 0; i < len; i++) {
+    str += data.charAt(Math.floor(Math.random() * strLength))
+  }
+  return str
+}
+
+it('should 111', function () {
+  console.log(parseInt(10.0012 * 100))
 })

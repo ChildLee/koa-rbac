@@ -1,4 +1,4 @@
-const {err, log} = require('../config/log')
+const {err, log} = require('../utils/log')
 
 class Middleware {
   //响应时间中间件

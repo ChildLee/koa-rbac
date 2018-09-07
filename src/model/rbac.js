@@ -1,5 +1,5 @@
 const Sequelize = require('sequelize')
-const db = require('../config/db')
+const db = require('../utils/db')
 
 const {INTEGER, STRING, BOOLEAN, BIGINT, TINYINT} = Sequelize
 
@@ -75,7 +75,11 @@ const Access = db.define('access', {
     comment: '父权限ID'
   },
   order: {
-    type: STRING(5),
+    type: INTEGER,
+    comment: '排序'
+  },
+  icon: {
+    type: STRING,
     allowNull: false,
     defaultValue: '',
     comment: '排序'

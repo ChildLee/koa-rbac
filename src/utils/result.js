@@ -20,6 +20,8 @@ class Result {
         //参数相关
         case 1001:
           return err(1001, '参数错误')
+        case 1002:
+          return err(1002, '微信支付参数错误')
         //授权相关
         case 2001:
           return err(2001, '无访问权限')
