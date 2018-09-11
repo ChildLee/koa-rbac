@@ -116,6 +116,30 @@ class Wx {
     })
   }
 
+  // 获取access_token
+  static access_token(code) {
+    let url = `https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=${config.appID}&secret=${config.appSecret}`
+    return axios.post(url).then(res => {
+      return res.data
+    })
+  }
+
+  // 生成小程序码
+  static QR_Code(access_token) {
+    let param = {
+      scene: '869587039119355',
+      page: 'pages/login/login',
+      width: '430',
+      auto_color: true,
+      line_color: {'r': '0', 'g': '0', 'b': '0'},
+      is_hyaline: false
+    }
+    let url = `https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=${access_token}`
+    return axios.post(url, param, {responseType: 'arraybuffer'}).then(res => {
+      return res.data
+    })
+  }
+
   // 解密手机号
   static decryptData(sessionKey, encryptedData, iv) {
     sessionKey = Buffer.from(sessionKey, 'base64')
@@ -124,10 +148,9 @@ class Wx {
 
     //创建aes-128-cbc解码对象
     let decipher = crypto.createDecipheriv('aes-128-cbc', sessionKey, iv)
-
     //encryptedData是Buffer则忽略inputEncoding参数
     let decoded = decipher.update(encryptedData, 'base64', 'utf8')
-
+    console.log(decoded)
     decoded += decipher.final('utf8')
 
     return JSON.parse(decoded)
