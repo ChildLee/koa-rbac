@@ -2,7 +2,6 @@ const qs = require('qs')
 const crypto = require('crypto')
 const xml2js = require('xml2js')
 const axios = require('axios').default
-const config = require('../config/default')
 
 const parser = new xml2js.Parser({
   //不获取根节点
@@ -22,8 +21,21 @@ const unifiedOrderUrl = 'https://api.mch.weixin.qq.com/pay/unifiedorder'
 // 查询订单
 const orderQueryUrl = 'https://api.mch.weixin.qq.com/pay/orderquery'
 
-// 微信支付
-class WxPay {
+const config = {
+  //小程序AppID
+  appID: 'wx4166fb058064fcb6',
+  //小程序AppSecret密钥
+  appSecret: '',
+  //商户号
+  mch_id: '1513118641',
+  //商户密钥
+  mch_key: '',
+  //测试用openid
+  openid: 'od0Ar5I41b1OnE6s7XGlRVco0dWo'
+}
+
+// 微信工具
+class Wx {
   // 小程序支付
   static appletPay(data) {
     // 交易类型
@@ -95,6 +107,31 @@ class WxPay {
     }
     return logic(orderQueryUrl, param)
   }
+
+  // 获取openid、session_key
+  static getOpenId(code) {
+    let url = `https://api.weixin.qq.com/sns/jscode2session?appid=${config.appID}&secret=${config.appSecret}&js_code=${code}&grant_type=authorization_code`
+    return axios.post(url).then(res => {
+      return res.data
+    })
+  }
+
+  // 解密手机号
+  static decryptData(sessionKey, encryptedData, iv) {
+    sessionKey = Buffer.from(sessionKey, 'base64')
+    encryptedData = Buffer.from(encryptedData, 'base64')
+    iv = Buffer.from(iv, 'base64')
+
+    //创建aes-128-cbc解码对象
+    let decipher = crypto.createDecipheriv('aes-128-cbc', sessionKey, iv)
+
+    //encryptedData是Buffer则忽略inputEncoding参数
+    let decoded = decipher.update(encryptedData, 'base64', 'utf8')
+
+    decoded += decipher.final('utf8')
+
+    return JSON.parse(decoded)
+  }
 }
 
 //微信支付通用方法
@@ -133,4 +170,4 @@ function randomStringing(len = 32) {
   return str
 }
 
-module.exports = WxPay
+module.exports = Wx

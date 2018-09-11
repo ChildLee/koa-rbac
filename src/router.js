@@ -1,6 +1,6 @@
 const Router = require('koa-router')
 const admin = require('./router/admin')
-const wxPay = require('./router/wxPay')
+const wxPay = require('./router/wx')
 
 const router = new Router()
 
