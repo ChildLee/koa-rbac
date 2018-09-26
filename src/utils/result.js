@@ -49,7 +49,7 @@ class Result {
     return {
       code,
       message,
-      data
+      data,
     }
   }
 }

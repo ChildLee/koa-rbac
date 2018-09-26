@@ -23,13 +23,13 @@ app.context.success = result.success
 app.use(trace.error())
 app.use(trace.ms())
 app.use(trace.response_time())
-app.use(cors())
+// app.use(cors())
 app.use(koaBody({
   multipart: true,
   formidable: {//文件上传临时目录
     uploadDir: path.join(__dirname, '..', 'temp'),
-    keepExtensions: true
-  }
+    keepExtensions: true,
+  },
 }))
 
 app.use(router.routes()).use(router.allowedMethods())

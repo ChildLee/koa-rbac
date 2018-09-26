@@ -7,13 +7,13 @@ const parser = new xml2js.Parser({
   //不获取根节点
   explicitRoot: false,
   //true始终将子节点放入数组中; false则只有存在多个数组时才创建数组。
-  explicitArray: false
+  explicitArray: false,
 })
 const builder = new xml2js.Builder({
   //根节点名称
   rootName: 'xml',
   //省略XML标题
-  headless: true
+  headless: true,
 })
 
 // 统一下单
@@ -31,7 +31,7 @@ const config = {
   //商户密钥
   mch_key: '',
   //测试用openid
-  openid: 'od0Ar5I41b1OnE6s7XGlRVco0dWo'
+  openid: 'od0Ar5I41b1OnE6s7XGlRVco0dWo',
 }
 
 // 微信工具
@@ -45,6 +45,12 @@ class Wx {
 
     // 请求统一下单接口
     return this.getPrepay(data).then(res => {
+      const sign = res.sign
+      res.sign = null
+
+      if (!getSign(res, config.mch_key) === sign) {
+        return {code: -1}
+      }
       // 判断请求是否成功
       if (res['result_code'] !== 'SUCCESS') return res
 
@@ -54,7 +60,7 @@ class Wx {
         timeStamp: Date.now().toString(),
         nonceStr: res['nonce_str'],
         package: `prepay_id=${res['prepay_id']}`,
-        signType: 'MD5'
+        signType: 'MD5',
       }
       // 加密参数
       args['paySign'] = getSign(args, config.mch_key)
@@ -86,7 +92,7 @@ class Wx {
       // 交易类型
       trade_type: data.trade_type,
       // 用户标识
-      openid: data.openid
+      openid: data.openid,
     }
     return logic(unifiedOrderUrl, param)
   }
@@ -103,7 +109,7 @@ class Wx {
       // 微信的订单号，优先使用
       transaction_id: data.transaction_id,
       // 商户订单号
-      out_trade_no: data.out_trade_no
+      out_trade_no: data.out_trade_no,
     }
     return logic(orderQueryUrl, param)
   }
@@ -132,7 +138,7 @@ class Wx {
       width: '430',
       auto_color: true,
       line_color: {'r': '0', 'g': '0', 'b': '0'},
-      is_hyaline: false
+      is_hyaline: false,
     }
     let url = `https://api.weixin.qq.com/wxa/getwxacodeunlimit?access_token=${access_token}`
     return axios.post(url, param, {responseType: 'arraybuffer'}).then(res => {
@@ -164,6 +170,7 @@ async function logic(url, param) {
   //生成xml
   const xml = builder.buildObject(param)
   const result = await axios.post(url, xml)
+
   return new Promise((resolve, reject) => {
     parser.parseString(result.data, (err, res) => {
       if (err) reject(err)

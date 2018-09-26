@@ -110,5 +110,5 @@ const accessInit = async function () {
 
 module.exports = {
   access,
-  accessInit
+  accessInit,
 }

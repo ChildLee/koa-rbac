@@ -10,8 +10,8 @@ class RBAC {
       include: [{
         model: access,
         attributes: ['id', 'name', 'url', 'type'],
-        where: {type: {[Op.or]: [0, 1]}}
-      }]
+        where: {type: {[Op.or]: [0, 1]}},
+      }],
     })
     ctx.body = ctx.success(menu)
   }
@@ -23,15 +23,15 @@ class RBAC {
       sort: joi.array().items(joi.object({
         id: joi.number().integer().min(1).required(),
         order: joi.number().integer().required(),
-        icon: joi.string().trim().allow('')
-      })).required()
+        icon: joi.string().trim().allow(''),
+      })).required(),
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
     const {sort} = value
     const {access} = ctx.model
     await access.bulkCreate(sort, {
-      updateOnDuplicate: ['id', 'order', 'icon']
+      updateOnDuplicate: ['id', 'order', 'icon'],
     })
     ctx.body = ctx.success()
   }
@@ -40,7 +40,7 @@ class RBAC {
   static async addRole(ctx) {
     const {joi} = ctx
     const schema = joi.object({
-      name: joi.string().trim().required()
+      name: joi.string().trim().required(),
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
@@ -53,7 +53,7 @@ class RBAC {
   static async delRole(ctx) {
     const {joi} = ctx
     const schema = joi.object({
-      id: joi.number().required()
+      id: joi.number().required(),
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
@@ -67,7 +67,7 @@ class RBAC {
     const {joi} = ctx
     const schema = joi.object({
       id: joi.number().required(),
-      name: joi.string().trim().required()
+      name: joi.string().trim().required(),
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
@@ -82,7 +82,7 @@ class RBAC {
     const {joi} = ctx
     const schema = joi.object({
       page: joi.number().default(1),
-      limit: joi.number().default(15)
+      limit: joi.number().default(15),
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
@@ -97,7 +97,7 @@ class RBAC {
     const {joi} = ctx
     const schema = joi.object({
       role_id: joi.number().required(),
-      permission: joi.array().items(joi.number()).required()
+      permission: joi.array().items(joi.number()).required(),
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
@@ -118,7 +118,7 @@ class RBAC {
   static async getRoleAccess(ctx) {
     const {joi} = ctx
     const schema = joi.object({
-      role_id: joi.number().required()
+      role_id: joi.number().required(),
     })
     const {value, error} = schema.validate(ctx.request.body)
     if (error) return ctx.body = ctx.err(1001, error.details[0].message)
@@ -126,7 +126,7 @@ class RBAC {
     const {role_access} = ctx.model
     const accesses = await role_access.findAll({
       attributes: ['accessId'],
-      where: {role_id}
+      where: {role_id},
     })
     let list = []
     for (let i = 0; i < accesses.length; i++) {
@@ -144,8 +144,8 @@ class RBAC {
       order: ['order'],
       include: [{
         model: access,
-        attributes: ['id', 'name']
-      }]
+        attributes: ['id', 'name'],
+      }],
     })
     ctx.body = ctx.success(result)
   }

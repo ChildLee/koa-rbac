@@ -12,7 +12,7 @@ module.exports = new Sequelize({
     max: 5,
     min: 0,
     acquire: 30000,
-    idle: 10000
+    idle: 10000,
   },
 
   timezone: '+08:00',
@@ -20,12 +20,12 @@ module.exports = new Sequelize({
     // 禁止修改表名
     freezeTableName: true,
     // 下划线命名
-    underscored: true
+    underscored: true,
   },
 
   // logging: false
 
   logging: (sql) => {
     console.log(sql)
-  }
+  },
 })

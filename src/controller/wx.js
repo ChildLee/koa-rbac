@@ -5,7 +5,7 @@ class Wx {
     const schema = joi.object().keys({
       order_sn: joi.string().max(32).required(),
       total_fee: joi.number().min(0.01).required(),
-      body: joi.string().trim().max(128).required()
+      body: joi.string().trim().max(128).required(),
     })
 
     const {value, error} = schema.validate(ctx.request.body)
@@ -28,7 +28,7 @@ class Wx {
     const schema = joi.object().keys({
       code: joi.string().required(),
       encryptedData: joi.string().required(),
-      iv: joi.string().required()
+      iv: joi.string().required(),
     })
     const {value, error} = schema.validate(ctx.request.body)
 

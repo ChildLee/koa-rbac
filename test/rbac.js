@@ -1,4 +1,6 @@
 const db = require('../src/utils/db')
+const qs = require('qs')
+const crypto = require('crypto')
 const model = require('../src/model/index')
 
 const {user, role, access, user_role, role_access} = model
@@ -67,8 +69,8 @@ it('MenuAll', async () => {
     order: ['order'],
     include: [{
       model: access,
-      attributes: ['id', 'name', 'url']
-    }]
+      attributes: ['id', 'name', 'url'],
+    }],
   })
   console.log(JSON.stringify(menu, null, 2))
 })
@@ -79,13 +81,13 @@ it('UserMenuAll', async () => {
     include: [{
       model: role,
       attributes: [],
-      where: {id: 2}
+      where: {id: 2},
     }, {
       model: access,
-      attributes: ['id', 'name', 'url']
+      attributes: ['id', 'name', 'url'],
     }],
     attributes: ['id', 'name'],
-    where: {pid: 1}
+    where: {pid: 1},
   })
   console.log(JSON.stringify(menu, null, 2))
 })
@@ -96,7 +98,7 @@ it('Menus', async () => {
   const roleList = await user_role.findAll({
     raw: true,
     attributes: ['role_id'],
-    where: {user_id: 1}
+    where: {user_id: 1},
   })
   //没有角色返回空数组
   if (!roleList.length) {
@@ -115,12 +117,12 @@ it('Menus', async () => {
       model: role,
       attributes: [],
       where: {
-        id: {[Op.in]: roles}
-      }
+        id: {[Op.in]: roles},
+      },
     }, {
       model: access,
-      attributes: ['id', 'name', 'url']
-    }]
+      attributes: ['id', 'name', 'url'],
+    }],
   })
   console.log(JSON.stringify(menus, null, 2))
 })
@@ -132,12 +134,12 @@ it('Access', async () => {
     include: [{
       model: user,
       attributes: [],
-      where: {id: 3}
+      where: {id: 3},
     }, {
       model: access,
       attributes: ['url'],
-      where: {url: '/upload/logo'}
-    }]
+      where: {url: '/upload/logo'},
+    }],
   })
   console.log(JSON.stringify(go, null, 2))
 })
@@ -167,7 +169,7 @@ it('should ddd', async () => {
     {roleId: 1, accessId: 6},
     {roleId: 1, accessId: 7},
     {roleId: 1, accessId: 9}], {
-    ignoreDuplicates: true
+    ignoreDuplicates: true,
   })
   console.log(JSON.stringify(res, null, 2))
 })
@@ -175,7 +177,7 @@ it('should ddd', async () => {
 it('should roleAccess', async () => {
   const accesses = await role_access.findAll({
     attributes: ['accessId'],
-    where: {role_id: 1}
+    where: {role_id: 1},
   })
   let list = []
   for (let i = 0; i < accesses.length; i++) {
@@ -192,6 +194,6 @@ it('should replace', async () => {
     {id: 4, order: 6},
     {id: 5, order: 7},
     {id: 6, order: 9}], {
-    updateOnDuplicate: ['id', 'order']
+    updateOnDuplicate: ['id', 'order'],
   })
 })

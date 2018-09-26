@@ -30,7 +30,7 @@ class Middleware {
         let message = e.message
         err.error(message)
         ctx.body = {
-          status, message
+          status, message,
         }
       }
     }
